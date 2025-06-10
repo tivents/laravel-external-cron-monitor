@@ -3,4 +3,4 @@ include:
     file: '/.gitlab/composer.yaml'
 
   - project: 'tivents/api-template'
-    file: '/.gitlab/test.yaml'
+    file: '/.gitlab/package-test.yaml'
