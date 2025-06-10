@@ -11,14 +11,10 @@
     </testsuites>
     <source>
         <include>
-            <directory>app</directory>
+            <directory suffix=".php">src</directory>
         </include>
     </source>
-
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./app</directory>
-        </include>
+    <coverage>
         <report>
             <html outputDirectory="build/coverage" />
             <cobertura outputFile="build/logs/cobertura.xml"/>
