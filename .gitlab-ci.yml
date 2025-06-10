@@ -1,0 +1,6 @@
+include:
+  - project: 'tivents/api-template'
+    file: '/.gitlab/composer.yaml'
+
+  - project: 'tivents/api-template'
+    file: '/.gitlab/test.yaml'
