@@ -1,0 +1,52 @@
+{
+  "name": "tivents/laravel-cron-monitor",
+  "description": "Ein Laravel-Paket zur externen Überwachung von Cron-Jobs",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Willi Helwig",
+      "email": "willi.helwig@tivents.de"
+    },
+    {
+      "name": "TIVENTS",
+      "email": "it@tivents.de"
+    }
+  ],
+  "require": {
+    "php": "^8.3",
+    "illuminate/support": "^12.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^10.0",
+    "pestphp/pest": "4.x-dev",
+    "pestphp/pest-plugin-laravel": "4.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tivents\\CronMonitor\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tivents\\CronMonitor\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ServiceProvider"
+      ],
+      "aliases": {
+        "CronMonitor": "Tivents\\CronMonitor\\Facades\\CronMonitor"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
