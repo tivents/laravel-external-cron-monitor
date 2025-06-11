@@ -24,9 +24,9 @@ beforeEach(function () {
     // Mock config values
     config([
         'app.name' => 'test-app',
-        'tivents.monitoring.endpoint' => 'https://example.com/api/',
-        'tivents.monitoring.api_key' => 'test-api-key',
-        'tivents.monitoring.alerts.slack_webhook' => 'https://hooks.slack.com/test',
+        'cron-monitor.central_log_url' => 'https://example.com/api/',
+        'cron-monitor.api_key' => 'test-api-key',
+        'cron-monitor.alerts.slack_webhook' => 'https://hooks.slack.com/test',
     ]);
 });
 

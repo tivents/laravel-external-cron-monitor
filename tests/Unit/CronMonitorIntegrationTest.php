@@ -13,8 +13,8 @@ beforeEach(function () {
 
     config([
         'app.name' => 'integration-test-app',
-        'tivents.monitoring.endpoint' => 'https://monitoring.example.com/api/',
-        'tivents.monitoring.api_key' => 'integration-test-key',
+        'cron-monitor.central_log_url' => 'https://monitoring.example.com/api/',
+        'cron-monitor.alerts.slack_webhook' => 'integration-test-key',
     ]);
 });
 

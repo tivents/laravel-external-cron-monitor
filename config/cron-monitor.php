@@ -47,4 +47,8 @@ return [
         //     'max_runtime' => 60, // Maximale Laufzeit in Sekunden
         // ],
     ],
+
+    'alerts' => [
+        'slack_webhook' => env('CRON_MONITOR_SLACK_WEBHOOK', ''),
+    ]
 ];

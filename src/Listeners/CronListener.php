@@ -81,7 +81,7 @@ class CronListener
     private function sendPerformanceAlert(array $data)
     {
         $minutes = round($data['duration_seconds'] / 60, 1);
-        Http::post(config('tivents.monitoring.alerts.slack_webhook'), [
+        Http::post(config('cron-monitor.alerts.slack_webhook'), [
             'text' => "⚠️ Long Running Cron Job: {$data['command']} took {$minutes} minutes in {$data['application']}",
         ]);
     }
@@ -110,8 +110,8 @@ class CronListener
         }
 
         try {
-            Http::timeout(5)->withHeaders(['X-API-Token' => config('tivents.monitoring.api_key')])
-                ->post(config('tivents.monitoring.endpoint').'cron-event', $data)->json();
+            Http::timeout(5)->withHeaders(['X-API-Token' => config('cron-monitor.api_key')])
+                ->post(config('cron-monitor.central_log_url'), $data)->json();
         } catch (\Exception $e) {
             Log::error('Failed to report to monitoring', [
                 'error' => $e->getMessage(),
