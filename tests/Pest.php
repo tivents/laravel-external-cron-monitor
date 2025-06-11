@@ -46,3 +46,35 @@ function something()
 {
     // ..
 }
+/*
+|--------------------------------------------------------------------------
+| Test Constants
+|--------------------------------------------------------------------------
+|
+| Hier definieren wir zentrale Konstanten für unsere Tests, die in allen
+| Testdateien verwendet werden können.
+|
+*/
+
+const MONITOR_TEST_URL = 'https://monitoring.example.com/api/';
+const MONITOR_TEST_API_KEY = 'integration-test-key';
+const TEST_APP_NAME = 'integration-test-app';
+
+/*
+|--------------------------------------------------------------------------
+| Test Setup Functions
+|--------------------------------------------------------------------------
+|
+| Zentrale Funktionen für das Setup von Tests
+|
+*/
+
+function setupMonitoringConfig()
+{
+    config([
+        'app.name' => TEST_APP_NAME,
+        'cron-monitor.central_log_url' => MONITOR_TEST_URL,
+        'cron-monitor.api_key' => MONITOR_TEST_API_KEY,
+        'cron-monitor.alerts.slack_webhook' => MONITOR_TEST_API_KEY,
+    ]);
+}

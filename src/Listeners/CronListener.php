@@ -30,7 +30,7 @@ class CronListener
         $startTime = microtime(true);
 
         // Startzeit im Cache speichern für spätere Duration-Berechnung
-        Cache::put("cron_start_{$taskId}", $startTime, 3600);
+        Cache::put("cron_start_$taskId", $startTime, 3600);
     }
 
     public function handleTaskFinished(ScheduledTaskFinished $event)
@@ -41,7 +41,7 @@ class CronListener
         $duration = $startTime ? ($endTime - $startTime) : ($event->runtime ?? 0);
 
         // Cache aufräumen
-        Cache::forget("cron_start_{$taskId}");
+        Cache::forget("cron_start_$taskId");
 
         $this->reportToMonitoring([
             'status' => 'finished',

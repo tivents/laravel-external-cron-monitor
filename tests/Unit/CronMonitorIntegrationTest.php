@@ -10,13 +10,7 @@ use Tivents\CronMonitor\Listeners\CronListener;
 
 beforeEach(function () {
     Http::fake();
-
-    config([
-        'app.name' => 'integration-test-app',
-        'cron-monitor.central_log_url' => 'https://monitoring.example.com/api/',
-        'cron-monitor.api_key' => 'integration-test-key', // Konfiguration für api_key hinzugefügt
-        'cron-monitor.alerts.slack_webhook' => 'integration-test-key',
-    ]);
+    setupMonitoringConfig();
 });
 
 describe('Cron Monitor Integration', function () {
@@ -38,11 +32,11 @@ describe('Cron Monitor Integration', function () {
 
         // Prüfe, dass Monitoring-Call gemacht wurde
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://monitoring.example.com/api/' &&
+            return $request->url() === MONITOR_TEST_URL &&
                 $request['status'] === 'finished' &&
                 $request['command'] === 'integration:test' &&
-                $request['application'] === 'integration-test-app' &&
-                $request->hasHeader('X-API-Token', 'integration-test-key');
+                $request['application'] === TEST_APP_NAME &&
+                $request->hasHeader('X-API-Token', MONITOR_TEST_API_KEY);
         });
     });
 

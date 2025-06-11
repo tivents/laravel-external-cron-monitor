@@ -22,12 +22,15 @@ beforeEach(function () {
     Log::spy();
 
     // Mock config values
+    setupMonitoringConfig();
+
+    // Zusätzliche Konfigurationen, die nicht in setupMonitoringConfig() enthalten sind
     config([
-        'app.name' => 'test-app',
-        'cron-monitor.central_log_url' => 'https://example.com/api/',
-        'cron-monitor.api_key' => 'test-api-key',
         'cron-monitor.alerts.slack_webhook' => 'https://hooks.slack.com/test',
     ]);
+
+
+
 });
 
 describe('CronListener Task Starting', function () {
@@ -39,9 +42,10 @@ describe('CronListener Task Starting', function () {
 
         $this->listener->handleTaskStarting($event);
 
-        $taskId = md5('test:commandtest-app');
-        expect(Cache::has("cron_start_{$taskId}"))->toBeTrue()
-            ->and(Cache::get("cron_start_{$taskId}"))->toBeFloat();
+        $taskId = md5('test:command'.TEST_APP_NAME);
+
+        expect(Cache::has("cron_start_$taskId"))->toBeTrue()
+            ->and(Cache::get("cron_start_$taskId"))->toBeFloat();
     });
 
     it('generiert konsistente Task-ID für gleiche Commands', function () {
@@ -57,10 +61,11 @@ describe('CronListener Task Starting', function () {
         $this->listener->handleTaskStarting($event1);
         $this->listener->handleTaskStarting($event2);
 
-        $taskId = md5('test:commandtest-app');
+        $taskId = md5('test:command'.TEST_APP_NAME);
         expect(Cache::has("cron_start_{$taskId}"))->toBeTrue();
     });
 });
+
 
 describe('CronListener Task Finished', function () {
     it('sendet Monitoring-Daten bei erfolgreichem Task-Abschluss', function () {
@@ -78,10 +83,10 @@ describe('CronListener Task Finished', function () {
         $this->listener->handleTaskFinished($finishedEvent);
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://example.com/api/' &&
+            return $request->url() === MONITOR_TEST_URL &&
                 $request['status'] === 'finished' &&
                 $request['command'] === 'test:command' &&
-                $request['application'] === 'test-app' &&
+                $request['application'] === TEST_APP_NAME &&
                 isset($request['duration_seconds']) &&
                 isset($request['memory_peak_mb']);
         });
@@ -95,8 +100,8 @@ describe('CronListener Task Finished', function () {
         $startEvent = new ScheduledTaskStarting($task);
         $this->listener->handleTaskStarting($startEvent);
 
-        $taskId = md5('test:commandtest-app');
-        expect(Cache::has("cron_start_{$taskId}"))->toBeTrue();
+        $taskId = md5('test:command'.TEST_APP_NAME);
+        expect(Cache::has("cron_start_$taskId"))->toBeTrue();
 
         $finishedEvent = new ScheduledTaskFinished($task, 0.1);
         $this->listener->handleTaskFinished($finishedEvent);
@@ -160,7 +165,7 @@ describe('CronListener Task Failed', function () {
         $this->listener->handleTaskFailed($failedEvent);
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://example.com/api/' &&
+            return $request->url() === MONITOR_TEST_URL &&
                 $request['status'] === 'failed' &&
                 $request['command'] === 'test:command' &&
                 $request['exception'] === 'Test error message';
@@ -174,8 +179,8 @@ describe('CronListener Task Failed', function () {
         $startEvent = new ScheduledTaskStarting($task);
         $this->listener->handleTaskStarting($startEvent);
 
-        $taskId = md5('test:commandtest-app');
-        expect(Cache::has("cron_start_{$taskId}"))->toBeTrue();
+        $taskId = md5('test:command'.TEST_APP_NAME);
+        expect(Cache::has("cron_start_$taskId"))->toBeTrue();
 
         $exception = new Exception('Test error');
         $failedEvent = new ScheduledTaskFailed($task, $exception);
@@ -230,7 +235,7 @@ describe('CronListener Error Handling', function () {
         $this->listener->handleTaskFinished($finishedEvent);
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('X-API-Token', 'test-api-key');
+            return $request->hasHeader('X-API-Token', MONITOR_TEST_API_KEY);
         });
     });
 });

@@ -9,7 +9,7 @@ return [
     | URL des zentralen Laravel-Systems, in dem die Logs gesammelt werden
     |
     */
-    'central_log_url' => env('CRON_MONITOR_CENTRAL_LOG_URL', 'http://central-log-server.example.com/api/cron-logs'),
+    'central_log_url' => env('CRON_MONITOR_CENTRAL_LOG_URL', 'https://monitoring.example.com/api/'),
 
     /*
     |--------------------------------------------------------------------------
@@ -19,7 +19,7 @@ return [
     | API-Schlüssel für die Authentifizierung beim zentralen Log-Server
     |
     */
-    'api_key' => env('CRON_MONITOR_API_KEY', ''),
+    'api_key' => env('CRON_MONITOR_API_KEY', 'integration-test-key'),
 
     /*
     |--------------------------------------------------------------------------
