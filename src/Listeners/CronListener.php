@@ -31,6 +31,13 @@ class CronListener
 
         // Startzeit im Cache speichern für spätere Duration-Berechnung
         Cache::put("cron_start_$taskId", $startTime, 3600);
+
+        // Optional Logging für Start-Event
+        $this->logEvent('Task gestartet', [
+            'command' => $event->task->command ?? $event->task->description,
+            'task_id' => $taskId,
+            'start_time' => $startTime,
+        ]);
     }
 
     public function handleTaskFinished(ScheduledTaskFinished $event)
@@ -43,7 +50,7 @@ class CronListener
         // Cache aufräumen
         Cache::forget("cron_start_$taskId");
 
-        $this->reportToMonitoring([
+        $data = [
             'status' => 'finished',
             'command' => $event->task->command ?? $event->task->description,
             'application' => config('app.name'),
@@ -53,7 +60,12 @@ class CronListener
             'duration_ms' => round($duration * 1000, 2),
             'runtime' => $event->runtime ?? 0, // Laravel's eingebaute Runtime
             'end_time' => $endTime,
-        ]);
+        ];
+
+        $this->reportToMonitoring($data);
+
+        // Optional Logging für Ende-Event
+        $this->logEvent('Task erfolgreich abgeschlossen', $data);
     }
 
     public function handleTaskFailed(ScheduledTaskFailed $event)
@@ -65,7 +77,7 @@ class CronListener
 
         Cache::forget("cron_start_{$taskId}");
 
-        $this->reportToMonitoring([
+        $data = [
             'status' => 'failed',
             'command' => $event->task->command ?? $event->task->description,
             'application' => config('app.name'),
@@ -75,7 +87,47 @@ class CronListener
             'duration_ms' => round($duration * 1000, 2),
             'exception' => $event->exception->getMessage(),
             'end_time' => $endTime,
-        ]);
+        ];
+
+        $this->reportToMonitoring($data);
+
+        // Bei Fehlern immer mit error level loggen
+        $this->logEvent('Task fehlgeschlagen', $data, 'error');
+    }
+
+    /**
+     * Optionales Logging basierend auf der Konfiguration
+     *
+     * @param string $message Die Log-Nachricht
+     * @param array $data Optionale Daten zum Loggen
+     * @param string|null $forcedLevel Erzwungenes Log-Level (überschreibt Konfiguration)
+     * @return void
+     */
+    private function logEvent(string $message, array $data = [], ?string $forcedLevel = null)
+    {
+        // Prüfen, ob Logging aktiviert ist
+        if (!config('cron-monitor.logging.enabled', false)) {
+            return;
+        }
+
+        // Log-Level aus Konfiguration oder forcedLevel verwenden
+        $level = $forcedLevel ?? config('cron-monitor.logging.log_level', 'info');
+
+        // Daten für das Logging vorbereiten
+        $logData = [];
+        if (config('cron-monitor.logging.include_data', false)) {
+            $logData = $data;
+        } else {
+            // Nur grundlegende Informationen einschließen
+            if (isset($data['command'])) $logData['command'] = $data['command'];
+            if (isset($data['task_id'])) $logData['task_id'] = $data['task_id'];
+            if (isset($data['status'])) $logData['status'] = $data['status'];
+            if (isset($data['duration_seconds'])) $logData['duration'] = $data['duration_seconds'] . 's';
+            if (isset($data['exception'])) $logData['fehler'] = $data['exception'];
+        }
+
+        // Log-Nachricht mit entsprechendem Level schreiben
+        Log::$level("CronMonitor: $message", $logData);
     }
 
     private function sendPerformanceAlert(array $data)

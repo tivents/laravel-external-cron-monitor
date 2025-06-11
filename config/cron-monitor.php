@@ -48,6 +48,20 @@ return [
         // ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Logging-Einstellungen
+    |--------------------------------------------------------------------------
+    |
+    | Konfiguration für das lokale Logging der Cron-Aktivitäten
+    |
+    */
+    'logging' => [
+        'enabled' => env('CRON_MONITOR_LOGGING_ENABLED', false),
+        'log_level' => env('CRON_MONITOR_LOG_LEVEL', 'info'), // info, debug, error
+        'include_data' => env('CRON_MONITOR_LOG_INCLUDE_DATA', false), // Detaillierte Daten einschließen
+    ],
+
     'alerts' => [
         'slack_webhook' => env('CRON_MONITOR_SLACK_WEBHOOK', ''),
     ]
