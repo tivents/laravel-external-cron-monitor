@@ -2,9 +2,6 @@
 
 namespace Tivents\CronMonitor;
 
-use Illuminate\Console\Events\ScheduledTaskFailed;
-use Illuminate\Console\Events\ScheduledTaskFinished;
-use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Support\ServiceProvider;
 use Tivents\CronMonitor\Console\Commands\CheckCronStatus;
 use Tivents\CronMonitor\Listeners\CronListener;

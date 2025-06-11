@@ -34,9 +34,6 @@
   },
   "extra": {
     "laravel": {
-      "providers": [
-        "ServiceProvider"
-      ],
       "aliases": {
         "CronMonitor": "Tivents\\CronMonitor\\Facades\\CronMonitor"
       }
