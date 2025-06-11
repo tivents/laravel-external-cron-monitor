@@ -78,13 +78,14 @@ describe('CronListener Task Finished', function () {
         $this->listener->handleTaskFinished($finishedEvent);
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://example.com/api/cron-event' &&
+            return $request->url() === 'https://example.com/api/' &&
                 $request['status'] === 'finished' &&
                 $request['command'] === 'test:command' &&
                 $request['application'] === 'test-app' &&
                 isset($request['duration_seconds']) &&
                 isset($request['memory_peak_mb']);
         });
+
     });
 
     it('räumt Cache nach Task-Abschluss auf', function () {
@@ -159,7 +160,7 @@ describe('CronListener Task Failed', function () {
         $this->listener->handleTaskFailed($failedEvent);
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://example.com/api/cron-event' &&
+            return $request->url() === 'https://example.com/api/' &&
                 $request['status'] === 'failed' &&
                 $request['command'] === 'test:command' &&
                 $request['exception'] === 'Test error message';

@@ -14,6 +14,7 @@ beforeEach(function () {
     config([
         'app.name' => 'integration-test-app',
         'cron-monitor.central_log_url' => 'https://monitoring.example.com/api/',
+        'cron-monitor.api_key' => 'integration-test-key', // Konfiguration für api_key hinzugefügt
         'cron-monitor.alerts.slack_webhook' => 'integration-test-key',
     ]);
 });
@@ -37,7 +38,7 @@ describe('Cron Monitor Integration', function () {
 
         // Prüfe, dass Monitoring-Call gemacht wurde
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://monitoring.example.com/api/cron-event' &&
+            return $request->url() === 'https://monitoring.example.com/api/' &&
                 $request['status'] === 'finished' &&
                 $request['command'] === 'integration:test' &&
                 $request['application'] === 'integration-test-app' &&
