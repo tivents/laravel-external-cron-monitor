@@ -34,11 +34,15 @@
   },
   "extra": {
     "laravel": {
+      "providers": [
+        "Tivents\\CronMonitor\\CronMonitorServiceProvider"
+      ],
       "aliases": {
         "CronMonitor": "Tivents\\CronMonitor\\Facades\\CronMonitor"
       }
     }
   },
+
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
