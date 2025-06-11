@@ -42,6 +42,4 @@ jobs:
                   composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
                   composer update --${{ matrix.stability }} --prefer-dist --no-interaction
             - name: Execute tests
-              run: |
-                  XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-text --colors=never --coverage-cobertura=coverage.cobertura.xml
-                  ls -alh
+              run: ./vendor/bin/pest --coverage --coverage-text --colors=never --coverage-cobertura=coverage.cobertura.xml
