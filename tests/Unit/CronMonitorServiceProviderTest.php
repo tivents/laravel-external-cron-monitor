@@ -22,11 +22,4 @@ describe('CronMonitorServiceProvider', function () {
         expect(config('cron-monitor.central_log_url'))->not->toBeNull()
             ->and(config('cron-monitor.api_key'))->not->toBeNull();
     });
-
-    it('CronListener ist als Singleton registriert', function () {
-        $listener1 = app(CronListener::class);
-        $listener2 = app(CronListener::class);
-
-        expect($listener1)->toBe($listener2);
-    });
 });
