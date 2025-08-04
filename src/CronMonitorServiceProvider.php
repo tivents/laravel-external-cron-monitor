@@ -13,12 +13,13 @@ class CronMonitorServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/../config/cron-monitor.php' => config_path('cron-monitor.php'),
-        ], 'cron-monitor-config');
-
         // Befehle registrieren
         if ($this->app->runningInConsole()) {
+
+            $this->publishes([
+                __DIR__ . '/../config/cron-monitor.php' => config_path('cron-monitor.php'),
+            ], 'cron-monitor-config');
+
             $this->commands([
                 CheckCronStatus::class,
             ]);
