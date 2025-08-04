@@ -62,10 +62,8 @@ class CronListener
             'end_time' => $endTime,
         ];
 
-        $this->reportToMonitoring($data);
-
-        // Optional Logging für Ende-Event
         $this->logEvent('Task erfolgreich abgeschlossen', $data);
+        $this->reportToMonitoring($data);
     }
 
     public function handleTaskFailed(ScheduledTaskFailed $event)
@@ -89,10 +87,8 @@ class CronListener
             'end_time' => $endTime,
         ];
 
-        $this->reportToMonitoring($data);
-
-        // Bei Fehlern immer mit error level loggen
         $this->logEvent('Task fehlgeschlagen', $data, 'error');
+        $this->reportToMonitoring($data);
     }
 
     /**
@@ -162,8 +158,12 @@ class CronListener
         }
 
         try {
-            Http::timeout(5)->withHeaders(['X-API-Token' => config('cron-monitor.api_key')])
+            $result = Http::timeout(5)->withHeaders(['X-API-Token' => config('cron-monitor.api_key')])
                 ->post(config('cron-monitor.central_log_url'), $data)->json();
+
+            if (!config('cron-monitor.logging.enabled', false)) {
+                Log::debug('CronMonitor: Monitoring-Daten gesendet', $result);
+            }
         } catch (\Exception $e) {
             Log::error('Failed to report to monitoring', [
                 'error' => $e->getMessage(),
