@@ -13,7 +13,6 @@ class CronMonitorServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // Konfigurationsdatei veröffentlichen
         $this->publishes([
             __DIR__ . '/../config/cron-monitor.php' => config_path('cron-monitor.php'),
         ], 'cron-monitor-config');
@@ -28,23 +27,10 @@ class CronMonitorServiceProvider extends ServiceProvider
 
     public function register()
     {
-        // Konfiguration mergen
         $this->mergeConfigFrom(
             __DIR__ . '/../config/cron-monitor.php', 'cron-monitor'
         );
 
         $this->app->register(EventServiceProvider::class);
-
-        // Service als Singleton registrieren
-        $this->app->singleton('cron-monitor', function ($app) {
-            return new CronMonitorService();
-        });
-
-        // CronListener als Singleton registrieren
-        $this->app->singleton(CronListener::class, function ($app) {
-            return new CronListener();
-        });
-
     }
-
 }
